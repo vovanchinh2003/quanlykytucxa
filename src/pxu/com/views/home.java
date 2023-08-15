@@ -60,7 +60,9 @@ import javax.swing.JPopupMenu;
 import javax.swing.Timer;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
+import pxu.com.dao.ElectricitywaterDao;
 import pxu.com.dao.RoomDao;
+import pxu.com.model.ElectricitywaterModel;
 import pxu.com.model.RoomModel;
 
 /**
@@ -221,7 +223,63 @@ public class home extends javax.swing.JFrame implements MouseListener {
             }
         });
         popup.add(xoaphong);
+        JMenuItem diennuoc = new JMenuItem("Tính điện nước");
+        diennuoc.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    laychisocu();
+                    laydiennuoc();
+                    jFrame6.setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        popup.add(diennuoc);
         return popup;
+    }
+
+    private void laydiennuoc() throws SQLException, ClassNotFoundException {
+        Connection conn = connecting.getConnection();
+        try {
+            String sqll = "select * from ELECTRICITY_WATER where status=N'Đã thanh toán' and  room_id=N'" + txtmp.getText() + "'";
+            String[] aray = {"Mã phòng", "Mã quản lý", "Chỉ số điện cũ", "Chỉ số điện mới", "Chỉ số nước cũ", "Chỉ số nước mới", "Tổng tiền", "Thời gian trả", "Trạng thái"};
+            DefaultTableModel model = new DefaultTableModel(aray, 0);
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sqll);
+            while (rs.next()) {
+                Vector vector = new Vector();
+                vector.add(rs.getString("room_id"));
+                vector.add(rs.getString("user_id"));
+                vector.add(rs.getInt("old_electricity_reading"));
+                vector.add(rs.getInt("new_electricity_reading"));
+                vector.add(rs.getInt("old_water_reading"));
+                vector.add(rs.getInt("new_water_reading"));
+                vector.add(rs.getFloat("electricity_price"));
+                vector.add(rs.getDate("payment_time"));
+                vector.add(rs.getString("status"));
+                model.addRow(vector);
+            }
+            tablediennuo.setModel(model);
+        } catch (SQLException e) {
+        }
+    }
+
+    private void laychisocu() {
+        String sql = "select * from ELECTRICITY_WATER where status=N'Đã thanh toán' and  room_id=N'" + txtmp.getText() + "'";
+        try {
+            Connection conn = connecting.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                txtsodiencu.setText(String.valueOf(rs.getInt("new_electricity_reading")));
+                txtsonuocu.setText(String.valueOf(rs.getInt("old_water_reading")));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private JPanel createBasicRoomPanel(ResultSet resultSet) throws SQLException {
@@ -530,6 +588,37 @@ public class home extends javax.swing.JFrame implements MouseListener {
         jLabel26 = new javax.swing.JLabel();
         comboloaiphong = new javax.swing.JComboBox<>();
         jButton14 = new javax.swing.JButton();
+        jFrame6 = new javax.swing.JFrame();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel28 = new javax.swing.JPanel();
+        jLabel27 = new javax.swing.JLabel();
+        jPanel29 = new javax.swing.JPanel();
+        jPanel30 = new javax.swing.JPanel();
+        jPanel33 = new javax.swing.JPanel();
+        jPanel34 = new javax.swing.JPanel();
+        jPanel35 = new javax.swing.JPanel();
+        jLabel28 = new javax.swing.JLabel();
+        txtid = new javax.swing.JTextField();
+        jLabel29 = new javax.swing.JLabel();
+        txtsodiencu = new javax.swing.JTextField();
+        jLabel30 = new javax.swing.JLabel();
+        txtsodienmoi = new javax.swing.JTextField();
+        jLabel31 = new javax.swing.JLabel();
+        txtsonuocu = new javax.swing.JTextField();
+        jLabel32 = new javax.swing.JLabel();
+        jPanel36 = new javax.swing.JPanel();
+        jPanel37 = new javax.swing.JPanel();
+        jLabel33 = new javax.swing.JLabel();
+        txtsonuocmoi = new javax.swing.JTextField();
+        jLabel34 = new javax.swing.JLabel();
+        txttongtien = new javax.swing.JTextField();
+        jLabel35 = new javax.swing.JLabel();
+        datetra = new com.toedter.calendar.JDateChooser();
+        jLabel37 = new javax.swing.JLabel();
+        jLabel39 = new javax.swing.JLabel();
+        jButton15 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tablediennuo = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         jButton2 = new javax.swing.JButton();
@@ -991,6 +1080,121 @@ public class home extends javax.swing.JFrame implements MouseListener {
 
         jFrame5.getContentPane().add(jPanel31, java.awt.BorderLayout.CENTER);
 
+        jFrame6.setLocation(new java.awt.Point(400, 95));
+        jFrame6.setMinimumSize(new java.awt.Dimension(716, 665));
+
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jPanel28.setLayout(new java.awt.BorderLayout());
+
+        jLabel27.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel27.setForeground(new java.awt.Color(102, 102, 0));
+        jLabel27.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel27.setText("Tính tiền điện nước");
+        jPanel28.add(jLabel27, java.awt.BorderLayout.CENTER);
+
+        jPanel4.add(jPanel28, java.awt.BorderLayout.PAGE_START);
+
+        jPanel29.setLayout(new java.awt.GridLayout(2, 0));
+
+        jPanel30.setLayout(new java.awt.BorderLayout());
+
+        jPanel33.setLayout(new java.awt.GridLayout());
+
+        jPanel34.setLayout(new java.awt.CardLayout(10, 20));
+
+        jPanel35.setLayout(new java.awt.GridLayout(5, 0, 0, 15));
+
+        jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel28.setText("ID:");
+        jPanel35.add(jLabel28);
+        jPanel35.add(txtid);
+
+        jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel29.setText("Chỉ số điện cũ:");
+        jPanel35.add(jLabel29);
+        jPanel35.add(txtsodiencu);
+
+        jLabel30.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel30.setText("Chỉ số điện mới:");
+        jPanel35.add(jLabel30);
+        jPanel35.add(txtsodienmoi);
+
+        jLabel31.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel31.setText("Chỉ số nước cũ:");
+        jPanel35.add(jLabel31);
+        jPanel35.add(txtsonuocu);
+        jPanel35.add(jLabel32);
+
+        jPanel34.add(jPanel35, "card2");
+
+        jPanel33.add(jPanel34);
+
+        jPanel36.setLayout(new java.awt.CardLayout(10, 20));
+
+        jPanel37.setLayout(new java.awt.GridLayout(5, 0, 0, 15));
+
+        jLabel33.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel33.setText("Chỉ số nước mới:");
+        jPanel37.add(jLabel33);
+
+        txtsonuocmoi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtsonuocmoiKeyReleased(evt);
+            }
+        });
+        jPanel37.add(txtsonuocmoi);
+
+        jLabel34.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel34.setText("Tổng tiền:");
+        jPanel37.add(jLabel34);
+        jPanel37.add(txttongtien);
+
+        jLabel35.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel35.setText("Thời gian trả:");
+        jPanel37.add(jLabel35);
+        jPanel37.add(datetra);
+        jPanel37.add(jLabel37);
+        jPanel37.add(jLabel39);
+
+        jButton15.setBackground(new java.awt.Color(0, 255, 0));
+        jButton15.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton15.setForeground(new java.awt.Color(255, 255, 255));
+        jButton15.setText("Thêm");
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+        jPanel37.add(jButton15);
+
+        jPanel36.add(jPanel37, "card2");
+
+        jPanel33.add(jPanel36);
+
+        jPanel30.add(jPanel33, java.awt.BorderLayout.CENTER);
+
+        jPanel29.add(jPanel30);
+
+        tablediennuo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(tablediennuo);
+
+        jPanel29.add(jScrollPane4);
+
+        jPanel4.add(jPanel29, java.awt.BorderLayout.CENTER);
+
+        jFrame6.getContentPane().add(jPanel4, java.awt.BorderLayout.CENTER);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jToolBar1.setRollover(true);
@@ -1034,6 +1238,11 @@ public class home extends javax.swing.JFrame implements MouseListener {
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton6);
         jToolBar1.add(jSeparator8);
 
@@ -1511,6 +1720,61 @@ public class home extends javax.swing.JFrame implements MouseListener {
         String roomNameQuery = roomNameTextField.getText(); // Lấy giá trị từ trường văn bản nhập tên phòng
         searchRooms(roomNameQuery); // Gọi hàm searchRooms với tên phòng và loại phòng tương ứng
     }//GEN-LAST:event_roomNameTextFieldKeyReleased
+    private void tinhtiendien() {
+        int chisodiencu = Integer.parseInt(txtsodiencu.getText());
+        int chisodienmoi = Integer.parseInt(txtsodienmoi.getText());
+        int chisonuoccu = Integer.parseInt(txtsonuocu.getText());
+        int chisonuocmoi = Integer.parseInt(txtsonuocmoi.getText());
+        int tiendien = (chisodienmoi - chisodiencu) * 3;
+        int tiennuoc = (chisonuocmoi - chisonuoccu) * 10;
+        int tong = tiendien + tiennuoc;
+        txttongtien.setText(String.valueOf(tong));
+    }
+    private void txtsonuocmoiKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtsonuocmoiKeyReleased
+        tinhtiendien();
+    }//GEN-LAST:event_txtsonuocmoiKeyReleased
+
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+
+        try {
+            StringBuilder sb = new StringBuilder();
+            if (sb.length() > 0) {
+                JOptionPane.showMessageDialog(rootPane, sb);
+                return;
+            }
+            ElectricitywaterModel d = new ElectricitywaterModel();
+            d.setUser_id(showuser.nguoiDangNhap.getUser_id());
+            d.setRoom_id(txtmp.getText());
+            d.setOld_electricity_reading(Integer.parseInt(txtsodiencu.getText()));
+            d.setNew_electricity_reading(Integer.parseInt(txtsodienmoi.getText()));
+            d.setOld_water_reading(Integer.parseInt(txtsonuocu.getText()));
+            d.setNew_water_reading(Integer.parseInt(txtsonuocmoi.getText()));
+            d.setElectricity_price(Float.parseFloat(txttongtien.getText()));
+            d.setStatus("Đã thanh toán");
+            SimpleDateFormat date = new SimpleDateFormat("yyy-MM-dd");
+            String tgtra = date.format(datetra.getDate());
+            d.setPayment_time(Date.valueOf(tgtra));
+            ElectricitywaterDao dao = new ElectricitywaterDao();
+            dao.insert(d);
+            laydiennuoc();
+            txtsodiencu.setText("");
+            txtsonuocu.setText("");
+            txtsodienmoi.setText("");
+            txtsonuocmoi.setText("");
+            txttongtien.setText("");
+            JOptionPane.showMessageDialog(rootPane, "Đã thanh toán !!!");
+        } catch (SQLException ex) {
+            Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(home.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        jFrame6.setVisible(true);
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1562,12 +1826,14 @@ public class home extends javax.swing.JFrame implements MouseListener {
     private com.toedter.calendar.JDateChooser datengaychuyen1;
     private com.toedter.calendar.JDateChooser datengaysinh;
     private com.toedter.calendar.JDateChooser datengayvao;
+    private com.toedter.calendar.JDateChooser datetra;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -1580,6 +1846,7 @@ public class home extends javax.swing.JFrame implements MouseListener {
     private javax.swing.JFrame jFrame3;
     private javax.swing.JFrame jFrame4;
     private javax.swing.JFrame jFrame5;
+    private javax.swing.JFrame jFrame6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1598,9 +1865,20 @@ public class home extends javax.swing.JFrame implements MouseListener {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel31;
+    private javax.swing.JLabel jLabel32;
+    private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
+    private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
+    private javax.swing.JLabel jLabel37;
     private javax.swing.JLabel jLabel38;
+    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel42;
@@ -1634,9 +1912,18 @@ public class home extends javax.swing.JFrame implements MouseListener {
     private javax.swing.JPanel jPanel25;
     private javax.swing.JPanel jPanel26;
     private javax.swing.JPanel jPanel27;
+    private javax.swing.JPanel jPanel28;
+    private javax.swing.JPanel jPanel29;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel30;
     private javax.swing.JPanel jPanel31;
     private javax.swing.JPanel jPanel32;
+    private javax.swing.JPanel jPanel33;
+    private javax.swing.JPanel jPanel34;
+    private javax.swing.JPanel jPanel35;
+    private javax.swing.JPanel jPanel36;
+    private javax.swing.JPanel jPanel37;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -1645,6 +1932,7 @@ public class home extends javax.swing.JFrame implements MouseListener {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
@@ -1663,8 +1951,10 @@ public class home extends javax.swing.JFrame implements MouseListener {
     private javax.swing.JTextPane lydo1;
     private javax.swing.JTextField roomNameTextField;
     private java.awt.ScrollPane scrollPane1;
+    private javax.swing.JTable tablediennuo;
     private javax.swing.JTextField txtgmail;
     private javax.swing.JTextField txthoten;
+    private javax.swing.JTextField txtid;
     private javax.swing.JLabel txtmand;
     private javax.swing.JTextField txtmaphong;
     private javax.swing.JTextField txtmasv;
@@ -1673,6 +1963,11 @@ public class home extends javax.swing.JFrame implements MouseListener {
     private javax.swing.JLabel txtmp;
     private javax.swing.JTextField txtquequan;
     private javax.swing.JTextField txtsdt;
+    private javax.swing.JTextField txtsodiencu;
+    private javax.swing.JTextField txtsodienmoi;
+    private javax.swing.JTextField txtsonuocmoi;
+    private javax.swing.JTextField txtsonuocu;
+    private javax.swing.JTextField txttongtien;
     private javax.swing.JLabel txtvaitro;
     // End of variables declaration//GEN-END:variables
  private void laysinhvien() throws SQLException, ClassNotFoundException {
