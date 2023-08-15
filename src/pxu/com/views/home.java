@@ -92,10 +92,10 @@ public class home extends javax.swing.JFrame implements MouseListener {
         if (showuser.nguoiDangNhap.getPosition().equals("Quản lý")) {
 
         } else if (showuser.nguoiDangNhap.getPosition().equals("Nhân viên")) {
-//            jButton1.setEnabled(false);
-//            jButton2.setEnabled(false);
-//            jButton3.setEnabled(false);
-//            jButton7.setEnabled(false);
+            jButton1.setEnabled(false);
+            jButton2.setEnabled(false);
+            jButton3.setEnabled(false);
+            jButton7.setEnabled(false);
         }
     }
 
